@@ -8,9 +8,8 @@ const SIGMA = (() => {
   const KEY_MESSAGES = 'sigma.messages';
 
   const DEFAULT_CONTENT = {
-    hero_kicker:   { label: 'Hero – riga sopra il titolo', value: 'Andria · Vendita e assistenza' },
-    hero_title:    { label: 'Hero – titolo', value: 'Il tuo computer, in mani esperte.' },
-    hero_text:     { label: 'Hero – sottotitolo', value: 'Portatili, PC fissi e componenti. Vendita, riparazione e assemblaggio su misura.', long: true },
+    hero_title:    { label: 'Apertura – titolo', value: 'Negozio di informatica' },
+    hero_text:     { label: 'Apertura – sottotitolo', value: 'Vendita e riparazione di portatili, PC fissi e componenti.', long: true },
     services_title:{ label: 'Servizi – titolo', value: 'Cosa facciamo' },
     s1_title:      { label: 'Servizio 1 – titolo', value: 'Portatili' },
     s1_text:       { label: 'Servizio 1 – testo', value: 'Vendita di notebook nuovi e ricondizionati. Riparazione schermi, tastiere, batterie e cerniere.', long: true },

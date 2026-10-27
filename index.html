@@ -12,8 +12,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Michroma&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/css/style.css?v=3">
-  <script src="assets/js/content.js?v=3"></script>
+  <link rel="stylesheet" href="assets/css/style.css?v=4">
+  <script src="assets/js/content.js?v=4"></script>
   <script>SIGMA.applyColors();</script>
 </head>
 <body>
@@ -39,12 +39,36 @@
 <main id="top">
   <!-- HERO -->
   <section class="hero">
-    <div class="hero__rings" aria-hidden="true"><i></i><i></i><i></i></div>
     <div class="wrap hero__inner">
-      <p class="kicker" data-key="hero_kicker"></p>
-      <h1 data-key="hero_title"></h1>
-      <p class="hero__text" data-key="hero_text"></p>
-      <a href="#contatti" class="btn">Richiedi assistenza</a>
+      <div class="hero__copy">
+        <h1 data-key="hero_title"></h1>
+        <p class="hero__text" data-key="hero_text"></p>
+        <a href="#contatti" class="btn">Richiedi assistenza</a>
+      </div>
+      <svg class="laptop" viewBox="0 0 520 340" role="img" aria-label="Computer portatile">
+        <defs>
+          <linearGradient id="screen" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#ffffff"/><stop offset="1" stop-color="#f3ede4"/>
+          </linearGradient>
+          <linearGradient id="deck" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#e4dfda"/><stop offset="1" stop-color="#c9c2bb"/>
+          </linearGradient>
+        </defs>
+        <ellipse cx="260" cy="318" rx="230" ry="12" fill="#000" opacity=".08"/>
+        <!-- schermo -->
+        <rect x="88" y="20" width="344" height="236" rx="14" fill="#2b2527"/>
+        <rect x="102" y="34" width="316" height="204" rx="4" fill="url(#screen)"/>
+        <circle cx="260" cy="27" r="2.5" fill="#55494c"/>
+        <image href="assets/img/logo-mark.png" x="215" y="70" width="90" height="90"/>
+        <rect x="190" y="178" width="140" height="8" rx="4" fill="var(--primary)" opacity=".85"/>
+        <rect x="215" y="196" width="90" height="6" rx="3" fill="var(--accent)" opacity=".7"/>
+        <!-- base -->
+        <path d="M60 256h400l40 34a8 8 0 0 1-5 14H25a8 8 0 0 1-5-14z" fill="url(#deck)"/>
+        <path d="M20 296h480v4a8 8 0 0 1-8 8H28a8 8 0 0 1-8-8z" fill="#b3aaa2"/>
+        <rect x="220" y="296" width="80" height="5" rx="2.5" fill="#9c928a"/>
+        <path d="M110 266h300l16 14H94z" fill="#d2ccc6"/>
+        <rect x="215" y="284" width="90" height="8" rx="3" fill="#cfc8c1"/>
+      </svg>
     </div>
   </section>
 
@@ -147,6 +171,6 @@
   </div>
 </footer>
 
-<script src="assets/js/main.js?v=3"></script>
+<script src="assets/js/main.js?v=4"></script>
 </body>
 </html>

@@ -48,18 +48,11 @@ a { color: inherit; text-decoration: none; }
 .nav__toggle span { width: 20px; height: 2px; border-radius: 2px; background: var(--accent); transition: transform .25s, opacity .25s; }
 
 /* Hero */
-.hero {
-  position: relative; overflow: hidden; color: #fff; padding: 110px 0 120px;
-  background: radial-gradient(ellipse at 80% 20%, color-mix(in srgb, var(--primary) 80%, #a0303f) 0%, var(--primary) 45%, var(--dark) 100%);
-}
-.hero__rings { position: absolute; right: -180px; top: 50%; width: 640px; aspect-ratio: 1; transform: translateY(-50%); }
-.hero__rings i { position: absolute; inset: 0; border-radius: 50%; border: 1.5px solid color-mix(in srgb, var(--accent) 45%, transparent); }
-.hero__rings i:nth-child(2) { inset: 80px; border-color: color-mix(in srgb, var(--accent) 30%, transparent); }
-.hero__rings i:nth-child(3) { inset: 160px; border: 0; background: radial-gradient(circle, color-mix(in srgb, var(--accent) 35%, transparent), transparent 70%); }
-.hero__inner { position: relative; max-width: 1100px; }
-.kicker { display: inline-block; font-size: .78rem; letter-spacing: .2em; text-transform: uppercase; font-weight: 600; color: var(--accent); margin-bottom: 18px; }
-.hero h1 { font-family: var(--display); font-weight: 400; font-size: clamp(1.9rem, 4.4vw, 3.1rem); line-height: 1.22; max-width: 640px; }
-.hero__text { margin: 20px 0 36px; font-size: 1.12rem; color: rgba(255,255,255,.78); max-width: 500px; }
+.hero { background: linear-gradient(180deg, #fff 0%, var(--light) 100%); padding: 80px 0 70px; }
+.hero__inner { display: grid; grid-template-columns: 1fr 1.05fr; align-items: center; gap: 48px; }
+.hero h1 { font-family: var(--display); font-weight: 400; color: var(--primary); font-size: clamp(1.9rem, 4vw, 2.9rem); line-height: 1.2; }
+.hero__text { margin: 18px 0 32px; font-size: 1.12rem; color: var(--muted); max-width: 440px; }
+.laptop { width: 100%; max-width: 520px; justify-self: end; }
 
 /* Fascia oro con il payoff del logo */
 .band { background: var(--gold); padding: 18px 20px; display: flex; justify-content: center; }
@@ -122,8 +115,10 @@ a { color: inherit; text-decoration: none; }
 @media (max-width: 860px) {
   .cards, .contact { grid-template-columns: 1fr; }
   .section { padding: 72px 0; }
-  .hero { padding: 80px 0 90px; }
-  .hero__rings { right: -320px; opacity: .6; }
+  .hero { padding: 48px 0 56px; text-align: center; }
+  .hero__inner { grid-template-columns: 1fr; gap: 28px; }
+  .laptop { order: -1; justify-self: center; max-width: 380px; }
+  .hero__text { margin-inline: auto; }
 }
 @media (max-width: 720px) {
   .wrap { width: calc(100% - 32px); }
