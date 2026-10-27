@@ -76,12 +76,12 @@ label { display: grid; gap: 6px; font-size: .8rem; font-weight: 600; color: var(
 .swatch span { display: grid; color: var(--text); font-size: .88rem; }
 .swatch small { color: var(--muted); font-weight: 400; font-family: monospace; }
 .preview { margin-top: 24px; border-radius: 14px; overflow: hidden; border: 1px solid var(--line); }
-.preview__hero { background: #fff; padding: 36px 28px; display: grid; justify-items: center; gap: 10px; }
+.preview__hero { background: radial-gradient(ellipse at 80% 20%, color-mix(in srgb, var(--primary) 80%, #a0303f) 0%, var(--primary) 45%, var(--dark) 100%); padding: 36px 28px; display: grid; justify-items: start; gap: 10px; }
 .preview__hero small { color: var(--accent); font-size: .72rem; font-weight: 600; letter-spacing: .18em; text-transform: uppercase; }
-.preview__hero span { font-family: 'Michroma', sans-serif; color: var(--primary); font-size: 1.2rem; }
-.preview__hero button { font: 600 .85rem 'Inter', sans-serif; background: var(--primary); color: #fff; border: 0; padding: 10px 22px; border-radius: 999px; margin-top: 6px; }
-.preview__light { background: var(--light); color: var(--muted); padding: 22px 28px; font-size: .9rem; text-align: center; }
-.preview__band { background: var(--primary); color: #fff; padding: 14px 28px; font-size: .9rem; text-align: center; }
+.preview__hero span { font-family: 'Michroma', sans-serif; color: #fff; font-size: 1.2rem; }
+.preview__hero button { font: 600 .85rem 'Inter', sans-serif; background: var(--gold-grad); color: var(--primary); border: 0; padding: 10px 22px; border-radius: 999px; margin-top: 6px; }
+.preview__band { background: var(--gold-grad); color: var(--primary); padding: 12px 28px; font-size: .85rem; font-weight: 600; text-align: center; letter-spacing: .1em; text-transform: uppercase; }
+.preview__light { background: var(--light); color: var(--primary); padding: 22px 28px; font-size: .9rem; text-align: center; }
 
 .toast { position: fixed; bottom: 24px; left: 50%; transform: translate(-50%, 20px); background: var(--dark); color: #fff; padding: 12px 22px; border-radius: 999px; font-size: .9rem; opacity: 0; transition: .3s; pointer-events: none; }
 .toast.show { opacity: 1; transform: translate(-50%, 0); }

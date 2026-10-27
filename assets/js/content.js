@@ -33,7 +33,7 @@ const SIGMA = (() => {
     primary: { label: 'Bordeaux (principale)', value: '#4f0a14' },
     accent:  { label: 'Oro (accento)', value: '#c8962e' },
     dark:    { label: 'Sfondo scuro', value: '#1c0508' },
-    light:   { label: 'Sfondo chiaro', value: '#faf7f2' }
+    light:   { label: 'Sfondo chiaro', value: '#f7f0e4' }
   };
 
   const read = (key, fallback) => {
