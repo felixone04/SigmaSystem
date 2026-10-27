@@ -12,8 +12,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Michroma&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/css/style.css?v=6">
-  <script src="assets/js/content.js?v=6"></script>
+  <link rel="stylesheet" href="assets/css/style.css?v=7">
+  <script src="assets/js/content.js?v=7"></script>
   <script>SIGMA.applyColors();</script>
 </head>
 <body>
@@ -37,8 +37,9 @@
     </a>
     <nav class="nav__links" id="navLinks">
       <a href="#servizi">Servizi</a>
-      <a href="#metodo">Metodo</a>
+      <a href="#preventivo">Preventivo</a>
       <a href="#azienda">Azienda</a>
+      <a href="#recensioni">Recensioni</a>
       <a href="#contatti">Contatti</a>
     </nav>
     <button class="nav__toggle" id="navToggle" aria-label="Apri menu" aria-expanded="false"><span></span><span></span><span></span></button>
@@ -63,7 +64,7 @@
         </h1>
         <p class="hero__text fade" data-key="hero_text"></p>
         <div class="hero__cta fade">
-          <a href="#contatti" class="btn">Richiedi assistenza</a>
+          <a href="#preventivo" class="btn">Preventivo gratuito</a>
           <a href="#servizi" class="link-arrow">Scopri i servizi <span>→</span></a>
         </div>
       </div>
@@ -114,11 +115,6 @@
     <a href="#servizi" class="scroll-cue" aria-label="Scorri"><span></span></a>
   </section>
 
-  <!-- Fascia scorrevole -->
-  <div class="marquee" aria-hidden="true">
-    <div class="marquee__track" id="marquee"></div>
-  </div>
-
   <!-- SERVIZI -->
   <section class="section section--cream" id="servizi">
     <div class="wrap">
@@ -143,8 +139,30 @@
     </div>
   </section>
 
+  <!-- PREVENTIVO A PASSI -->
+  <section class="section section--quote" id="preventivo">
+    <div class="wrap">
+      <h2 class="title reveal" data-key="quote_title"></h2>
+      <p class="subtitle reveal" data-delay="100" data-key="quote_text"></p>
+
+      <div class="wizard reveal" data-delay="200" id="wizard">
+        <div class="wz-head">
+          <span class="wz-count" id="wzCount"></span>
+          <span class="wz-name" id="wzName"></span>
+        </div>
+        <div class="wz-bar"><i id="wzBar"></i></div>
+        <div class="wz-stage" id="wzStage" aria-live="polite"></div>
+        <div class="wz-nav" id="wzNav">
+          <button type="button" class="btn-ghost" id="wzBack">← Indietro</button>
+          <p class="wz-error" id="wzError" role="alert"></p>
+          <button type="button" class="btn" id="wzNext">Avanti →</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- METODO -->
-  <section class="section" id="metodo">
+  <section class="section section--cream" id="metodo">
     <div class="wrap">
       <h2 class="title reveal" data-key="process_title"></h2>
       <div class="steps" id="steps">
@@ -176,6 +194,48 @@
       <p class="reveal" data-delay="150" data-key="about_text"></p>
     </div>
   </section>
+
+  <!-- RECENSIONI -->
+  <section class="section" id="recensioni">
+    <div class="wrap">
+      <h2 class="title reveal" data-key="reviews_title"></h2>
+      <div class="rv-summary reveal" id="rvSummary"></div>
+      <div class="rv-track" id="rvTrack"></div>
+      <div class="rv-actions reveal">
+        <div class="rv-arrows" id="rvArrows">
+          <button type="button" class="rv-arrow" data-dir="-1" aria-label="Recensioni precedenti">←</button>
+          <button type="button" class="rv-arrow" data-dir="1" aria-label="Recensioni successive">→</button>
+        </div>
+        <button type="button" class="btn" id="rvOpen">Lascia una recensione</button>
+      </div>
+    </div>
+  </section>
+
+  <dialog class="modal" id="rvDialog" aria-labelledby="rvDialogTitle">
+    <form class="modal__box" id="rvForm" method="dialog" novalidate>
+      <button type="button" class="modal__close" id="rvClose" aria-label="Chiudi">✕</button>
+      <div id="rvFormBody">
+        <h3 id="rvDialogTitle">La tua recensione</h3>
+        <div class="stars-input" id="rvStars" role="radiogroup" aria-label="Valutazione">
+          <button type="button" role="radio" aria-checked="false" data-v="1" aria-label="1 stella">★</button>
+          <button type="button" role="radio" aria-checked="false" data-v="2" aria-label="2 stelle">★</button>
+          <button type="button" role="radio" aria-checked="false" data-v="3" aria-label="3 stelle">★</button>
+          <button type="button" role="radio" aria-checked="false" data-v="4" aria-label="4 stelle">★</button>
+          <button type="button" role="radio" aria-checked="false" data-v="5" aria-label="5 stelle">★</button>
+        </div>
+        <label>Nome<input name="name" required maxlength="60" autocomplete="name"></label>
+        <label>Recensione<textarea name="text" rows="4" required maxlength="600"></textarea></label>
+        <label class="check"><input type="checkbox" name="privacy" required> Acconsento alla pubblicazione del mio nome e della recensione.</label>
+        <p class="wz-error" id="rvError" role="alert"></p>
+        <button type="submit" class="btn">Invia recensione</button>
+      </div>
+      <div class="modal__done" id="rvDone" hidden>
+        <div class="done-check">✓</div>
+        <h3>Grazie!</h3>
+        <p>La tua recensione sarà pubblicata dopo l'approvazione.</p>
+      </div>
+    </form>
+  </dialog>
 
   <!-- CONTATTI -->
   <section class="section section--cream" id="contatti">
@@ -242,6 +302,8 @@
   </div>
 </footer>
 
-<script src="assets/js/main.js?v=6"></script>
+<script src="assets/js/main.js?v=7"></script>
+<script src="assets/js/quote.js?v=7"></script>
+<script src="assets/js/reviews.js?v=7"></script>
 </body>
 </html>

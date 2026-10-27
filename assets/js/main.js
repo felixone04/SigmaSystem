@@ -43,10 +43,6 @@
     }, reduced ? 0 : 1100);
   }
 
-  // Fascia scorrevole (contenuto duplicato per lo scorrimento continuo)
-  const tags = ['Notebook HP', 'Lenovo', 'Windows 11', 'PC desktop', 'PC gaming', 'RAM', 'CPU', 'SSD', 'Schede video', 'Riparazioni', 'Assemblaggio', 'Upgrade'];
-  $('#marquee').innerHTML = [...tags, ...tags].map(t => `<span>${t}</span>`).join('');
-
   // --- Intro ---
   const start = () => {
     $('#loader').classList.add('is-done');

@@ -8,9 +8,9 @@
   <link rel="icon" href="assets/img/favicon.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Michroma&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/css/admin.css?v=6">
-  <script src="assets/js/content.js?v=6"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Michroma&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/admin.css?v=7">
+  <script src="assets/js/content.js?v=7"></script>
   <script>SIGMA.applyColors();</script>
 </head>
 <body>
@@ -33,7 +33,10 @@
   <aside class="side">
     <div class="side__brand"><img src="assets/img/logo-mark.png" alt="" width="34" height="34"><span>SIGMA</span></div>
     <nav class="side__nav">
-      <button data-tab="messaggi" class="active">Messaggi <span class="badge" id="unread"></span></button>
+      <button data-tab="preventivi" class="active">Preventivi <span class="badge" id="badgeQuotes"></span></button>
+      <button data-tab="messaggi">Messaggi <span class="badge" id="badgeMessages"></span></button>
+      <button data-tab="recensioni">Recensioni <span class="badge" id="badgeReviews"></span></button>
+      <button data-tab="config">Configura preventivo</button>
       <button data-tab="testi">Testi</button>
       <button data-tab="colori">Colori</button>
     </nav>
@@ -44,11 +47,57 @@
   </aside>
 
   <main class="main">
-    <section class="tab" id="tab-messaggi">
-      <header class="main__head"><h2>Messaggi e richieste</h2></header>
+    <!-- Richieste di preventivo -->
+    <section class="tab" id="tab-preventivi">
+      <header class="main__head"><h2>Richieste di preventivo</h2></header>
+      <div id="quotes"></div>
+    </section>
+
+    <!-- Messaggi dal modulo contatti -->
+    <section class="tab" id="tab-messaggi" hidden>
+      <header class="main__head"><h2>Messaggi</h2></header>
       <div id="messages"></div>
     </section>
 
+    <!-- Recensioni -->
+    <section class="tab" id="tab-recensioni" hidden>
+      <header class="main__head"><h2>Recensioni</h2></header>
+      <h3 class="sub">Da approvare</h3>
+      <div id="reviewsPending"></div>
+      <h3 class="sub">Pubblicate sul sito</h3>
+      <div id="reviewsApproved"></div>
+    </section>
+
+    <!-- Configuratore del preventivo -->
+    <section class="tab" id="tab-config" hidden>
+      <header class="main__head">
+        <h2>Configura preventivo</h2>
+        <div class="actions">
+          <button class="btn btn--ghost" id="cfgReset">Ripristina predefinito</button>
+          <button class="btn" id="cfgSave">Salva</button>
+        </div>
+      </header>
+      <p class="hint">Qui decidi cosa chiede il preventivo sul sito. Il primo passo è sempre la <b>tipologia</b>; ogni passaggio può comparire solo per alcune tipologie e contenere una o più domande. Le modifiche sono visibili sul sito dopo aver premuto <b>Salva</b>.</p>
+
+      <div class="cfg-block">
+        <h3>Tipologie di prodotto</h3>
+        <div id="cfgTypes" class="cfg-types"></div>
+        <button class="btn btn--ghost btn--sm" data-act="addType">+ Aggiungi tipologia</button>
+      </div>
+
+      <div class="cfg-block">
+        <h3>Passaggi e domande</h3>
+        <div id="cfgSteps"></div>
+        <button class="btn btn--ghost btn--sm" data-act="addStep">+ Aggiungi passaggio</button>
+      </div>
+
+      <div class="cfg-savebar" id="cfgDirty" hidden>
+        <span>Modifiche non salvate</span>
+        <button class="btn btn--sm" id="cfgSave2">Salva ora</button>
+      </div>
+    </section>
+
+    <!-- Testi -->
     <section class="tab" id="tab-testi" hidden>
       <header class="main__head">
         <h2>Testi del sito</h2>
@@ -60,6 +109,7 @@
       <form id="textForm" class="fields"></form>
     </section>
 
+    <!-- Colori -->
     <section class="tab" id="tab-colori" hidden>
       <header class="main__head">
         <h2>Colori</h2>
@@ -71,7 +121,6 @@
       <form id="colorForm" class="colors"></form>
       <div class="preview">
         <div class="preview__hero"><span>Titolo</span><small>Sottotitolo</small><button type="button">Pulsante</button></div>
-        <div class="preview__band">Fascia oro</div>
         <div class="preview__light">Sezione chiara</div>
       </div>
     </section>
@@ -80,6 +129,6 @@
 
 <div class="toast" id="toast"></div>
 
-<script src="assets/js/admin.js?v=6"></script>
+<script src="assets/js/admin.js?v=7"></script>
 </body>
 </html>
