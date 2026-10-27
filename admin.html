@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Gestionale – Sigma System</title>
+  <link rel="icon" href="assets/img/favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Michroma&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/admin.css">
+  <script src="assets/js/content.js"></script>
+  <script>SIGMA.applyColors();</script>
+</head>
+<body>
+
+<!-- LOGIN -->
+<section class="login" id="login">
+  <form class="login__box" id="loginForm">
+    <img src="assets/img/logo-mark.png" alt="" width="72" height="72">
+    <h1>Area riservata</h1>
+    <label>Utente<input name="user" autocomplete="username" required></label>
+    <label>Password<input name="pass" type="password" autocomplete="current-password" required></label>
+    <p class="error" id="loginError" hidden>Credenziali non valide</p>
+    <button class="btn" type="submit">Accedi</button>
+    <a href="index.html" class="back">← Torna al sito</a>
+  </form>
+</section>
+
+<!-- PANNELLO -->
+<div class="app" id="app" hidden>
+  <aside class="side">
+    <div class="side__brand"><img src="assets/img/logo-mark.png" alt="" width="34" height="34"><span>SIGMA</span></div>
+    <nav class="side__nav">
+      <button data-tab="messaggi" class="active">Messaggi <span class="badge" id="unread"></span></button>
+      <button data-tab="testi">Testi</button>
+      <button data-tab="colori">Colori</button>
+    </nav>
+    <div class="side__foot">
+      <a href="index.html" target="_blank">Vedi sito ↗</a>
+      <button id="logout">Esci</button>
+    </div>
+  </aside>
+
+  <main class="main">
+    <section class="tab" id="tab-messaggi">
+      <header class="main__head"><h2>Messaggi e richieste</h2></header>
+      <div id="messages"></div>
+    </section>
+
+    <section class="tab" id="tab-testi" hidden>
+      <header class="main__head">
+        <h2>Testi del sito</h2>
+        <div class="actions">
+          <button class="btn btn--ghost" id="resetText">Ripristina</button>
+          <button class="btn" form="textForm">Salva</button>
+        </div>
+      </header>
+      <form id="textForm" class="fields"></form>
+    </section>
+
+    <section class="tab" id="tab-colori" hidden>
+      <header class="main__head">
+        <h2>Colori</h2>
+        <div class="actions">
+          <button class="btn btn--ghost" id="resetColors">Ripristina</button>
+          <button class="btn" form="colorForm">Salva</button>
+        </div>
+      </header>
+      <form id="colorForm" class="colors"></form>
+      <div class="preview">
+        <div class="preview__hero"><span>Anteprima</span><button type="button">Pulsante</button></div>
+        <div class="preview__band">Fascia vantaggi</div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="assets/js/admin.js"></script>
+</body>
+</html>
