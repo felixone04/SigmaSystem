@@ -12,15 +12,17 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Michroma&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/css/style.css?v=7">
-  <script src="assets/js/content.js?v=7"></script>
+  <link rel="stylesheet" href="assets/css/style.css?v=8">
+  <script src="assets/js/content.js?v=8"></script>
   <script>SIGMA.applyColors();</script>
 </head>
 <body>
 
 <!-- Intro -->
 <div class="loader" id="loader" aria-hidden="true">
-  <img src="assets/img/logo-mark.png" alt="" width="90" height="90">
+  <img src="assets/img/logo-mark.png" alt="" width="120" height="120">
+  <span class="wordmark loader__word"></span>
+  <span class="tagline loader__tag"></span>
   <span class="loader__bar"></span>
 </div>
 
@@ -149,6 +151,7 @@
         <div class="wz-head">
           <span class="wz-count" id="wzCount"></span>
           <span class="wz-name" id="wzName"></span>
+          <button type="button" class="wz-reset" id="wzReset" hidden>↺ Azzera scelte</button>
         </div>
         <div class="wz-bar"><i id="wzBar"></i></div>
         <div class="wz-stage" id="wzStage" aria-live="polite"></div>
@@ -242,7 +245,7 @@
     <div class="wrap">
       <h2 class="title reveal" data-key="contact_title"></h2>
       <div class="contact">
-        <div class="reveal">
+        <div class="reveal contact__info">
           <ul class="info">
             <li>
               <i><svg viewBox="0 0 24 24"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg></i>
@@ -261,29 +264,10 @@
               <div><small>Orari</small><span data-key="hours"></span></div>
             </li>
           </ul>
-          <iframe class="map" title="Mappa" loading="lazy" referrerpolicy="no-referrer-when-downgrade"
-            src="https://maps.google.com/maps?q=Via%20Bologna%2015%2C%20Andria%20BT&z=16&output=embed"></iframe>
+          <a href="#preventivo" class="btn">Richiedi un preventivo</a>
         </div>
-
-        <form class="form reveal" data-delay="150" id="contactForm">
-          <div class="form__row">
-            <label>Nome<input name="name" required autocomplete="name"></label>
-            <label>Telefono<input name="phone" type="tel" autocomplete="tel"></label>
-          </div>
-          <label>Email<input name="email" type="email" required autocomplete="email"></label>
-          <label>Richiesta
-            <select name="type">
-              <option>Riparazione</option>
-              <option>Acquisto portatile</option>
-              <option>Acquisto PC fisso</option>
-              <option>Componenti</option>
-              <option>Altro</option>
-            </select>
-          </label>
-          <label>Messaggio<textarea name="message" rows="4" required></textarea></label>
-          <button class="btn" type="submit">Invia richiesta</button>
-          <p class="form__ok" id="formOk" hidden>Grazie! Ti ricontatteremo al più presto.</p>
-        </form>
+        <iframe class="map reveal" data-delay="150" title="Mappa" loading="lazy" referrerpolicy="no-referrer-when-downgrade"
+          src="https://maps.google.com/maps?q=Via%20Bologna%2015%2C%20Andria%20BT&z=16&output=embed"></iframe>
       </div>
     </div>
   </section>
@@ -302,8 +286,8 @@
   </div>
 </footer>
 
-<script src="assets/js/main.js?v=7"></script>
-<script src="assets/js/quote.js?v=7"></script>
-<script src="assets/js/reviews.js?v=7"></script>
+<script src="assets/js/main.js?v=8"></script>
+<script src="assets/js/quote.js?v=8"></script>
+<script src="assets/js/reviews.js?v=8"></script>
 </body>
 </html>

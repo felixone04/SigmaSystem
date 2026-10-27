@@ -49,8 +49,8 @@
     document.body.classList.add('is-ready');
   };
   if (reduced) start();
-  else window.addEventListener('load', () => setTimeout(start, 900));
-  setTimeout(start, 2500); // sicurezza se "load" tarda
+  else window.addEventListener('load', () => setTimeout(start, 1500));
+  setTimeout(start, 3200); // sicurezza se "load" tarda
 
   // --- Navbar e barra di avanzamento ---
   const nav = $('#nav');
@@ -143,14 +143,4 @@
     });
   }
 
-  // --- Form contatti -> messaggi nel gestionale ---
-  const form = $('#contactForm');
-  form.addEventListener('submit', e => {
-    e.preventDefault();
-    SIGMA.addMessage(Object.fromEntries(new FormData(form)));
-    form.reset();
-    const ok = $('#formOk');
-    ok.hidden = false;
-    setTimeout(() => ok.hidden = true, 5000);
-  });
 })();

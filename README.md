@@ -3,7 +3,7 @@
 Sito vetrina di **Sigma System s.r.l.** (Andria) – vendita e riparazione di portatili, PC fissi e componenti.
 
 - `index.html` – vetrina: apertura animata, servizi, **preventivo a passi**, metodo, azienda, **recensioni**, contatti
-- `admin.html` – gestionale: preventivi ricevuti, messaggi, recensioni da approvare, configurazione del preventivo, testi e colori
+- `admin.html` – gestionale: preventivi ricevuti, recensioni da approvare, configurazione del preventivo, testi e colori
 
 ## Accesso gestionale
 
@@ -23,6 +23,9 @@ Il primo passo è sempre la **tipologia** (Portatile, PC fisso, …). Dal gestio
 - aggiungere o togliere le opzioni di ogni domanda e renderla obbligatoria o facoltativa
 
 La configurazione predefinita è in `DEFAULT_QUOTE` dentro `assets/js/content.js`.
+
+Accanto alle tipologie c'è sempre **Richiesta personalizzata**: il cliente scrive una descrizione libera e lascia i contatti.
+Il pulsante **Azzera scelte** (con conferma al secondo tocco) riporta il preventivo all'inizio; toccando di nuovo una scelta singola la si deseleziona.
 
 ## Recensioni
 

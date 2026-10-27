@@ -10,6 +10,7 @@
   const next = $('#wzNext');
   const err = $('#wzError');
   const nav = $('#wzNav');
+  const reset = $('#wzReset');
 
   const ICONS = {
     laptop: '<svg viewBox="0 0 48 48"><rect x="9" y="10" width="30" height="20" rx="2"/><path d="M4 36h40l-3 3H7z"/></svg>',
@@ -18,21 +19,33 @@
     monitor: '<svg viewBox="0 0 48 48"><rect x="5" y="7" width="38" height="25" rx="2"/><path d="M18 40h12M24 32v8"/></svg>',
     server: '<svg viewBox="0 0 48 48"><rect x="9" y="6" width="30" height="11" rx="2"/><rect x="9" y="19" width="30" height="11" rx="2"/><rect x="9" y="32" width="30" height="11" rx="2"/><path d="M15 11.5h4M15 24.5h4M15 37.5h4"/></svg>',
     component: '<svg viewBox="0 0 48 48"><rect x="14" y="14" width="20" height="20" rx="2"/><rect x="20" y="20" width="8" height="8"/><path d="M19 8v6M24 8v6M29 8v6M19 34v6M24 34v6M29 34v6M8 19h6M8 24h6M8 29h6M34 19h6M34 24h6M34 29h6"/></svg>',
-    printer: '<svg viewBox="0 0 48 48"><path d="M14 18V6h20v12"/><rect x="6" y="18" width="36" height="16" rx="2"/><rect x="14" y="28" width="20" height="14"/></svg>'
+    printer: '<svg viewBox="0 0 48 48"><path d="M14 18V6h20v12"/><rect x="6" y="18" width="36" height="16" rx="2"/><rect x="14" y="28" width="20" height="14"/></svg>',
+    custom: '<svg viewBox="0 0 48 48"><path d="M8 10h32a3 3 0 0 1 3 3v18a3 3 0 0 1-3 3H22l-9 7v-7H8a3 3 0 0 1-3-3V13a3 3 0 0 1 3-3z"/><path d="M14 19h20M14 25h13"/></svg>'
   };
 
-  const fresh = () => ({ i: 0, type: null, answers: {}, contact: { name: '', phone: '', email: '', notes: '', privacy: false } });
+  // Richiesta personalizzata: sempre disponibile accanto alle tipologie configurate
+  const CUSTOM = { id: '__custom', label: 'Richiesta personalizzata' };
+
+  const fresh = () => ({ i: 0, type: null, answers: {}, custom: '', contact: { name: '', phone: '', email: '', notes: '', privacy: false } });
   let state = fresh();
 
-  const typeLabel = () => (cfg.types.find(t => t.id === state.type) || {}).label || '';
-  const stepsFor = () => [
-    { kind: 'type', title: 'Cosa ti serve?' },
-    ...cfg.steps
-      .filter(s => !s.types || !s.types.length || (state.type && s.types.includes(state.type)))
-      .map(s => ({ kind: 'step', ...s })),
-    { kind: 'contact', title: 'I tuoi dati' },
-    { kind: 'summary', title: 'Riepilogo' }
-  ];
+  const isCustom = () => state.type === CUSTOM.id;
+  const typeLabel = () => isCustom() ? CUSTOM.label : (cfg.types.find(t => t.id === state.type) || {}).label || '';
+  const stepsFor = () => isCustom()
+    ? [
+      { kind: 'type', title: 'Cosa ti serve?' },
+      { kind: 'custom', title: 'Descrivi la tua richiesta' },
+      { kind: 'contact', title: 'I tuoi dati' },
+      { kind: 'summary', title: 'Riepilogo' }
+    ]
+    : [
+      { kind: 'type', title: 'Cosa ti serve?' },
+      ...cfg.steps
+        .filter(s => !s.types || !s.types.length || (state.type && s.types.includes(state.type)))
+        .map(s => ({ kind: 'step', ...s })),
+      { kind: 'contact', title: 'I tuoi dati' },
+      { kind: 'summary', title: 'Riepilogo' }
+    ];
 
   // Valore leggibile di una risposta
   const money = (n) => '€ ' + Number(n).toLocaleString('it-IT');
@@ -83,10 +96,18 @@
     if (step.kind === 'type') {
       return `<h3>${esc(step.title)}</h3><div class="wz-opts wz-types">${cfg.types.map(t => `
         <button type="button" class="opt opt-type" aria-pressed="${state.type === t.id}" data-type="${esc(t.id)}">
-          ${ICONS[t.icon] || ICONS.component}<span>${esc(t.label)}</span></button>`).join('')}</div>`;
+          ${ICONS[t.icon] || ICONS.component}<span>${esc(t.label)}</span></button>`).join('')}
+        <button type="button" class="opt opt-type opt-type--custom" aria-pressed="${isCustom()}" data-type="${CUSTOM.id}">
+          ${ICONS.custom}<span>${CUSTOM.label}<small>Descrivi tu cosa ti serve</small></span></button>
+      </div>`;
     }
     if (step.kind === 'step') {
       return `<h3>${esc(step.title)}</h3>${step.questions.map(questionHtml).join('')}`;
+    }
+    if (step.kind === 'custom') {
+      return `<h3>${esc(step.title)}</h3>
+        <p class="wz-hint">Raccontaci di cosa hai bisogno: una riparazione, un componente particolare, una configurazione su misura, una consulenza…</p>
+        <textarea class="wz-text" data-custom rows="7" maxlength="2000" placeholder="Es. Vorrei aggiornare il mio PC per il montaggio video, oggi ha 8 GB di RAM e un disco lento…">${esc(state.custom)}</textarea>`;
     }
     if (step.kind === 'contact') {
       const c = state.contact;
@@ -101,6 +122,7 @@
     }
     // Riepilogo
     const rows = [`<div class="wz-sum__row"><div><h4>Tipologia</h4><p>${esc(typeLabel())}</p></div><button type="button" class="wz-edit" data-goto="0">Modifica</button></div>`];
+    if (isCustom()) rows.push(`<div class="wz-sum__row"><div><h4>Descrizione</h4><p class="pre">${esc(state.custom.trim())}</p></div><button type="button" class="wz-edit" data-goto="1">Modifica</button></div>`);
     steps.forEach((s, idx) => {
       if (s.kind !== 'step') return;
       const items = s.questions.map(q => [q.label, display(q)]).filter(([, v]) => v);
@@ -125,10 +147,30 @@
 
     stage.innerHTML = `<div class="wz-step ${dir > 0 ? 'from-right' : dir < 0 ? 'from-left' : ''}">${stepHtml(step, steps)}</div>`;
     back.classList.toggle('is-hidden', state.i === 0);
+    reset.hidden = !hasChoices();
+    disarmReset();
     next.textContent = step.kind === 'summary' ? 'Invia richiesta ✓' : step.kind === 'contact' ? 'Riepilogo →' : 'Avanti →';
     err.textContent = '';
     stage.querySelectorAll('.range').forEach(syncRange);
   };
+
+  // --- Azzera scelte: chiede conferma con un secondo tocco ---
+  const hasChoices = () => !!(state.type || state.custom.trim() || Object.keys(state.answers).length ||
+    Object.values(state.contact).some(v => v && v !== false));
+  const RESET_LABEL = '↺ Azzera scelte';
+  const disarmReset = () => { clearTimeout(reset.timer); reset.classList.remove('armed'); reset.textContent = RESET_LABEL; };
+  reset.addEventListener('click', () => {
+    if (!reset.classList.contains('armed')) {
+      reset.classList.add('armed');
+      reset.textContent = 'Tocca di nuovo per azzerare';
+      reset.timer = setTimeout(disarmReset, 3000);
+      return;
+    }
+    state = fresh();
+    nav.hidden = false;
+    render(-1);
+    scrollToWizard();
+  });
 
   const scrollToWizard = () => {
     const top = wizard.getBoundingClientRect().top;
@@ -139,6 +181,7 @@
   // ---------- Validazione ----------
   const validate = (step) => {
     if (step.kind === 'type') return state.type ? '' : 'Scegli una tipologia per continuare.';
+    if (step.kind === 'custom' && state.custom.trim().length < 10) return 'Descrivi la tua richiesta con qualche parola in più.';
     if (step.kind === 'step') {
       for (const q of step.questions) {
         const v = state.answers[q.id];
@@ -168,6 +211,7 @@
       state.type = t.dataset.type;
       stage.querySelectorAll('.opt-type').forEach(b => b.setAttribute('aria-pressed', b === t));
       $('#wzName').textContent = typeLabel();
+      reset.hidden = false;
       autoNext();
       return;
     }
@@ -180,15 +224,19 @@
         const list = state.answers[q.id] || [];
         state.answers[q.id] = list.includes(v) ? list.filter(x => x !== v) : [...list, v];
       } else {
-        state.answers[q.id] = v;
+        // un secondo tocco sulla stessa scelta la deseleziona
+        if (state.answers[q.id] === v) delete state.answers[q.id];
+        else state.answers[q.id] = v;
       }
       stage.querySelectorAll(`.opt[data-q="${CSS.escape(q.id)}"]`).forEach(b => {
-        const on = q.type === 'multi' ? state.answers[q.id].includes(b.dataset.v) : b.dataset.v === state.answers[q.id];
+        const cur = state.answers[q.id];
+        const on = q.type === 'multi' ? (cur || []).includes(b.dataset.v) : b.dataset.v === cur;
         b.setAttribute('aria-pressed', on);
       });
       err.textContent = '';
+      reset.hidden = !hasChoices();
       // Un'unica domanda a scelta singola: si passa da soli al passo successivo
-      if (q.type === 'choice' && step.questions.length === 1) autoNext();
+      if (q.type === 'choice' && step.questions.length === 1 && state.answers[q.id]) autoNext();
       return;
     }
 
@@ -200,6 +248,8 @@
     const el = e.target;
     if (el.dataset.c) {
       state.contact[el.dataset.c] = el.type === 'checkbox' ? el.checked : el.value;
+    } else if (el.dataset.custom !== undefined) {
+      state.custom = el.value;
     } else if (el.classList.contains('wz-text')) {
       state.answers[el.dataset.q] = el.value;
     } else if (el.dataset.r) {
@@ -246,11 +296,13 @@
   });
 
   const submit = (steps) => {
-    const sections = steps.filter(s => s.kind === 'step').map(s => ({
-      title: s.title,
-      items: s.questions.map(q => ({ label: q.label, value: display(q) })).filter(x => x.value)
-    })).filter(s => s.items.length);
-    const budgetQ = cfg.steps.flatMap(s => s.questions).find(q => q.type === 'range' && state.answers[q.id]);
+    const sections = isCustom()
+      ? [{ title: 'Descrizione', items: [{ label: 'Richiesta del cliente', value: state.custom.trim() }] }]
+      : steps.filter(s => s.kind === 'step').map(s => ({
+        title: s.title,
+        items: s.questions.map(q => ({ label: q.label, value: display(q) })).filter(x => x.value)
+      })).filter(s => s.items.length);
+    const budgetQ = isCustom() ? null : steps.filter(s => s.kind === 'step').flatMap(s => s.questions).find(q => q.type === 'range' && state.answers[q.id]);
     const c = state.contact;
     SIGMA.addQuote({
       type: typeLabel(),
@@ -262,10 +314,11 @@
     $('#wzBar').style.width = '100%';
     $('#wzCount').textContent = 'Inviato';
     nav.hidden = true;
+    reset.hidden = true;
     stage.innerHTML = `<div class="wz-step wz-done">
       <div class="done-check">✓</div>
       <h3>Richiesta inviata!</h3>
-      <p>Grazie ${esc(c.name.split(' ')[0])}, ti ricontatteremo al più presto con la proposta per il tuo ${esc(typeLabel().toLowerCase())}.</p>
+      <p>Grazie ${esc(c.name.trim().split(' ')[0])}, ti ricontatteremo al più presto ${isCustom() ? 'per la tua richiesta' : `con la proposta per il tuo ${esc(typeLabel().toLowerCase())}`}.</p>
       <button type="button" class="btn-ghost" id="wzRestart">Nuovo preventivo</button>
     </div>`;
     $('#wzRestart').addEventListener('click', () => { state = fresh(); nav.hidden = false; render(-1); });

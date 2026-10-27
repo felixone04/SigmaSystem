@@ -104,6 +104,7 @@ summary { cursor: pointer; font-size: .85rem; font-weight: 600; color: var(--mut
 .quote__sec h4 { font-size: .72rem; letter-spacing: .1em; text-transform: uppercase; color: color-mix(in srgb, var(--accent) 75%, #000); margin-bottom: 6px; }
 .quote__sec p { font-size: .88rem; display: grid; margin-bottom: 4px; }
 .quote__sec p span { font-size: .75rem; color: var(--muted); }
+.quote__sec:only-child { grid-column: 1 / -1; }
 .quote__notes { margin-top: 12px; background: #fffbea; border-radius: 10px; padding: 10px 14px; }
 
 /* Recensioni */

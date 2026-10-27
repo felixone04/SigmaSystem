@@ -29,7 +29,7 @@
   const showApp = () => {
     $('#login').hidden = true;
     $('#app').hidden = false;
-    renderQuotes(); renderMessages(); renderReviews(); renderConfig(); renderTexts(); renderColors();
+    renderQuotes(); renderReviews(); renderConfig(); renderTexts(); renderColors();
   };
 
   $('#loginForm').addEventListener('submit', async (e) => {
@@ -58,8 +58,8 @@
 
   const badge = (sel, n) => { $(sel).textContent = n || ''; };
 
-  // Pulsanti "letto / elimina" comuni a preventivi e messaggi
-  const listActions = (container, getList, saveList, render, noun) => {
+  // Pulsanti "letto / elimina" delle richieste
+  const listActions =(container, getList, saveList, render, noun) => {
     $(container).addEventListener('click', (e) => {
       const btn = e.target.closest('button[data-act]');
       if (!btn) return;
@@ -116,27 +116,6 @@
       </article>`).join('');
   };
   listActions('#quotes', SIGMA.quotes, SIGMA.saveQuotes, renderQuotes, 'preventivo');
-
-  // --- Messaggi ---
-  const renderMessages = () => {
-    const list = SIGMA.messages();
-    badge('#badgeMessages', list.filter(m => !m.read).length);
-    if (!list.length) {
-      $('#messages').innerHTML = '<p class="empty">Nessun messaggio ricevuto.</p>';
-      return;
-    }
-    $('#messages').innerHTML = list.map(m => `
-      <article class="msg ${m.read ? '' : 'msg--new'}" data-id="${m.id}">
-        <div class="msg__head">
-          <strong>${esc(m.name)}</strong>
-          <span class="tag">${esc(m.type)}</span>
-          <time>${when(m.date)}</time>
-        </div>
-        <p>${esc(m.message)}</p>
-        ${contactFoot(m)}
-      </article>`).join('');
-  };
-  listActions('#messages', SIGMA.messages, SIGMA.saveMessages, renderMessages, 'messaggio');
 
   // --- Recensioni ---
   const starsHtml = (n) => `<span class="stars">${'★'.repeat(n)}<i>${'★'.repeat(5 - n)}</i></span>`;
@@ -482,7 +461,6 @@
 
   // Aggiorna gli elenchi se arrivano dati da un'altra scheda del browser
   addEventListener('storage', (e) => {
-    if (e.key === 'sigma.messages') renderMessages();
     if (e.key === 'sigma.quotes') renderQuotes();
     if (e.key === 'sigma.reviews') renderReviews();
   });
