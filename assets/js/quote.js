@@ -26,7 +26,7 @@
   // Richiesta personalizzata: sempre disponibile accanto alle tipologie configurate
   const CUSTOM = { id: '__custom', label: 'Richiesta personalizzata' };
 
-  const fresh = () => ({ i: 0, type: null, answers: {}, custom: '', contact: { name: '', phone: '', email: '', notes: '', privacy: false } });
+  const fresh = () => ({ i: 0, type: null, answers: {}, custom: '', photos: [], contact: { name: '', phone: '', email: '', notes: '', privacy: false } });
   let state = fresh();
 
   const isCustom = () => state.type === CUSTOM.id;
@@ -55,6 +55,60 @@
     if (q.type === 'multi') return v.join(', ');
     if (q.type === 'range') return `${money(v.from)} – ${money(v.to)}`;
     return String(v);
+  };
+
+  // ---------- Foto del guasto: massimo 2, ridotte nel browser per pesare poco ----------
+  const MAX_PHOTOS = 2;
+  const MAX_SIDE = 1280;
+  const MAX_BYTES = 20 * 1024 * 1024;
+
+  const photosHtml = () => `
+    <div class="wz-photos wide" id="wzPhotos">
+      <p class="wz-label">Foto del guasto <small>· facoltative, massimo ${MAX_PHOTOS}</small></p>
+      <div class="ph-list">
+        ${state.photos.map((p, i) => `<figure class="ph"><img src="${p.data}" alt="Foto ${i + 1}">
+          <button type="button" class="ph-del" data-del="${i}" aria-label="Rimuovi foto ${i + 1}">✕</button></figure>`).join('')}
+        ${state.photos.length < MAX_PHOTOS ? `<label class="ph-add" tabindex="0">
+          <input type="file" accept="image/*" multiple data-photos hidden>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg>
+          <span>Aggiungi foto<small>scatta o scegli dalla galleria</small></span></label>` : ''}
+      </div>
+    </div>`;
+
+  const refreshPhotos = () => {
+    const box = stage.querySelector('#wzPhotos');
+    if (box) box.outerHTML = photosHtml();
+    reset.hidden = !hasChoices();
+  };
+
+  const shrink = (file) => new Promise((resolve, reject) => {
+    if (!file.type.startsWith('image/')) return reject(new Error('type'));
+    if (file.size > MAX_BYTES) return reject(new Error('size'));
+    const url = URL.createObjectURL(file);
+    const img = new Image();
+    img.onload = () => {
+      const k = Math.min(1, MAX_SIDE / Math.max(img.naturalWidth, img.naturalHeight));
+      const cv = document.createElement('canvas');
+      cv.width = Math.round(img.naturalWidth * k);
+      cv.height = Math.round(img.naturalHeight * k);
+      cv.getContext('2d').drawImage(img, 0, 0, cv.width, cv.height);
+      URL.revokeObjectURL(url);
+      resolve({ name: file.name.replace(/\.[^.]+$/, '') + '.jpg', data: cv.toDataURL('image/jpeg', 0.72) });
+    };
+    img.onerror = () => { URL.revokeObjectURL(url); reject(new Error('decode')); };
+    img.src = url;
+  });
+
+  const addPhotos = async (files) => {
+    const room = MAX_PHOTOS - state.photos.length;
+    const list = [...files].slice(0, room);
+    let problem = files.length > room ? `Puoi allegare al massimo ${MAX_PHOTOS} foto.` : '';
+    for (const f of list) {
+      try { state.photos.push(await shrink(f)); }
+      catch (e) { problem = e.message === 'size' ? 'Foto troppo grande: massimo 20 MB.' : 'Questo file non è un\'immagine supportata.'; }
+    }
+    refreshPhotos();
+    err.textContent = problem;
   };
 
   // ---------- Render dei passaggi ----------
@@ -107,7 +161,8 @@
     if (step.kind === 'custom') {
       return `<h3>${esc(step.title)}</h3>
         <p class="wz-hint">Raccontaci di cosa hai bisogno: una riparazione, un componente particolare, una configurazione su misura, una consulenza…</p>
-        <textarea class="wz-text" data-custom rows="7" maxlength="2000" placeholder="Es. Vorrei aggiornare il mio PC per il montaggio video, oggi ha 8 GB di RAM e un disco lento…">${esc(state.custom)}</textarea>`;
+        <textarea class="wz-text" data-custom rows="7" maxlength="2000" placeholder="Es. Vorrei aggiornare il mio PC per il montaggio video, oggi ha 8 GB di RAM e un disco lento…">${esc(state.custom)}</textarea>
+        ${photosHtml()}`;
     }
     if (step.kind === 'contact') {
       const c = state.contact;
@@ -117,6 +172,7 @@
           <label>Telefono<input data-c="phone" type="tel" value="${esc(c.phone)}" autocomplete="tel"></label>
           <label class="wide">Email *<input data-c="email" type="email" value="${esc(c.email)}" autocomplete="email"></label>
           <label class="wide">Note o richieste particolari<textarea data-c="notes" rows="3">${esc(c.notes)}</textarea></label>
+          ${isCustom() ? '' : photosHtml()}
           <label class="check wide"><input type="checkbox" data-c="privacy" ${c.privacy ? 'checked' : ''}> <span>Acconsento al trattamento dei dati per essere ricontattato (<a href="privacy.html" target="_blank">informativa privacy</a>).</span></label>
         </div>`;
     }
@@ -130,6 +186,10 @@
       rows.push(`<div class="wz-sum__row"><div><h4>${esc(s.title)}</h4>${items.map(([l, v]) => `<p><span>${esc(l)}:</span> ${esc(v)}</p>`).join('')}</div>
         <button type="button" class="wz-edit" data-goto="${idx}">Modifica</button></div>`);
     });
+    if (state.photos.length) {
+      rows.push(`<div class="wz-sum__row"><div><h4>Foto del guasto</h4><div class="ph-list ph-list--sm">${state.photos.map((p, i) => `<img src="${p.data}" alt="Foto ${i + 1}">`).join('')}</div></div>
+        <button type="button" class="wz-edit" data-goto="${isCustom() ? 1 : steps.length - 2}">Modifica</button></div>`);
+    }
     const c = state.contact;
     rows.push(`<div class="wz-sum__row"><div><h4>Contatti</h4><p>${esc(c.name)}</p><p>${esc([c.email, c.phone].filter(Boolean).join(' · '))}</p>${c.notes ? `<p>${esc(c.notes)}</p>` : ''}</div>
       <button type="button" class="wz-edit" data-goto="${steps.length - 2}">Modifica</button></div>`);
@@ -155,7 +215,7 @@
   };
 
   // --- Azzera scelte: chiede conferma con un secondo tocco ---
-  const hasChoices = () => !!(state.type || state.custom.trim() || Object.keys(state.answers).length ||
+  const hasChoices = () => !!(state.type || state.custom.trim() || state.photos.length || Object.keys(state.answers).length ||
     Object.values(state.contact).some(v => v && v !== false));
   const RESET_LABEL = '↺ Azzera scelte';
   const disarmReset = () => { clearTimeout(reset.timer); reset.classList.remove('armed'); reset.textContent = RESET_LABEL; };
@@ -205,6 +265,13 @@
   stage.addEventListener('click', (e) => {
     const steps = stepsFor();
     const step = steps[state.i];
+
+    const del = e.target.closest('.ph-del');
+    if (del) {
+      state.photos.splice(+del.dataset.del, 1);
+      refreshPhotos();
+      return;
+    }
 
     const t = e.target.closest('.opt-type');
     if (t) {
@@ -266,9 +333,30 @@
   });
   stage.addEventListener('change', (e) => {
     if (e.target.dataset.c === 'privacy') state.contact.privacy = e.target.checked;
+    if (e.target.dataset.photos !== undefined && e.target.files.length) addPhotos(e.target.files);
   });
   stage.addEventListener('keydown', (e) => {
+    if (e.target.classList.contains('ph-add') && (e.key === 'Enter' || e.key === ' ')) {
+      e.preventDefault();
+      e.target.querySelector('input').click();
+      return;
+    }
     if (e.key === 'Enter' && e.target.tagName === 'INPUT') { e.preventDefault(); next.click(); }
+  });
+
+  // Trascina e rilascia le foto sul riquadro "Aggiungi foto" (computer)
+  stage.addEventListener('dragover', (e) => {
+    const zone = e.target.closest('.ph-add');
+    if (!zone) return;
+    e.preventDefault();
+    zone.classList.add('drag');
+  });
+  stage.addEventListener('dragleave', (e) => { e.target.closest('.ph-add')?.classList.remove('drag'); });
+  stage.addEventListener('drop', (e) => {
+    const zone = e.target.closest('.ph-add');
+    if (!zone) return;
+    e.preventDefault();
+    addPhotos(e.dataTransfer.files);
   });
 
   function syncRange(box, source) {
@@ -304,12 +392,22 @@
       })).filter(s => s.items.length);
     const budgetQ = isCustom() ? null : steps.filter(s => s.kind === 'step').flatMap(s => s.questions).find(q => q.type === 'range' && state.answers[q.id]);
     const c = state.contact;
-    SIGMA.addQuote({
+    const record = {
       type: typeLabel(),
       name: c.name.trim(), email: c.email.trim(), phone: c.phone.trim(), notes: c.notes.trim(),
       budget: budgetQ ? display(budgetQ) : '',
-      sections
-    });
+      sections,
+      photos: state.photos
+    };
+    // Se lo spazio di salvataggio è pieno, la richiesta parte comunque senza foto
+    let photosLost = false;
+    if (!SIGMA.addQuote(record)) {
+      photosLost = record.photos.length > 0;
+      if (!SIGMA.addQuote({ ...record, photos: [] })) {
+        err.textContent = 'Non è stato possibile inviare la richiesta. Riprova tra poco.';
+        return;
+      }
+    }
 
     $('#wzBar').style.width = '100%';
     $('#wzCount').textContent = 'Inviato';
@@ -319,6 +417,7 @@
       <div class="done-check">✓</div>
       <h3>Richiesta inviata!</h3>
       <p>Grazie ${esc(c.name.trim().split(' ')[0])}, ti ricontatteremo al più presto ${isCustom() ? 'per la tua richiesta' : `con la proposta per il tuo ${esc(typeLabel().toLowerCase())}`}.</p>
+      ${photosLost ? '<p class="wz-hint">Le foto non sono state allegate: potrai mostrarcele in negozio o quando ti ricontattiamo.</p>' : ''}
       <button type="button" class="btn-ghost" id="wzRestart">Nuovo preventivo</button>
     </div>`;
     $('#wzRestart').addEventListener('click', () => { state = fresh(); nav.hidden = false; render(-1); });

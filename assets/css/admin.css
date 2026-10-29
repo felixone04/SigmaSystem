@@ -105,6 +105,16 @@ summary { cursor: pointer; font-size: .85rem; font-weight: 600; color: var(--mut
 .quote__sec p { font-size: .88rem; display: grid; margin-bottom: 4px; }
 .quote__sec p span { font-size: .75rem; color: var(--muted); }
 .quote__sec:only-child { grid-column: 1 / -1; }
+.q-photos { display: flex; gap: 10px; margin-top: 12px; flex-wrap: wrap; }
+.q-photo { padding: 0; border: 1px solid var(--line); border-radius: 10px; overflow: hidden; cursor: zoom-in; background: none; }
+.q-photo img { display: block; width: 96px; height: 96px; object-fit: cover; transition: transform .3s; }
+.q-photo:hover img { transform: scale(1.06); }
+.lightbox { position: fixed; inset: 0; z-index: 95; display: grid; place-items: center; padding: 20px; background: rgba(20,12,10,.75); }
+.lightbox figure { display: grid; gap: 12px; justify-items: center; max-width: 100%; }
+.lightbox img { max-width: min(1000px, 100%); max-height: calc(100vh - 120px); border-radius: 12px; background: #fff; }
+.lightbox figcaption { display: flex; gap: 10px; }
+.lightbox .btn { text-decoration: none; }
+.lightbox .btn--ghost { background: #fff; }
 .quote__notes { margin-top: 12px; background: #fffbea; border-radius: 10px; padding: 10px 14px; }
 
 /* Recensioni */

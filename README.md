@@ -25,6 +25,8 @@ Il primo passo è sempre la **tipologia** (Portatile, PC fisso, …). Dal gestio
 La configurazione predefinita è in `DEFAULT_QUOTE` dentro `assets/js/content.js`.
 
 Accanto alle tipologie c'è sempre **Richiesta personalizzata**: il cliente scrive una descrizione libera e lascia i contatti.
+Il cliente può allegare **fino a 2 foto del guasto** (nella richiesta personalizzata e nel passo dei dati): vengono ridotte nel browser a 1280 px in JPEG e nel gestionale si vedono come miniature, ingrandibili e scaricabili. In questa versione dimostrativa lo spazio del browser è limitato (circa 5 MB): se è pieno la richiesta parte senza foto e il cliente viene avvisato.
+
 Il pulsante **Azzera scelte** (con conferma al secondo tocco) riporta il preventivo all'inizio; toccando di nuovo una scelta singola la si deseleziona.
 
 ## Recensioni

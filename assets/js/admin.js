@@ -99,6 +99,7 @@
           <strong>${esc(q.name)}</strong>
           <span class="tag">${esc(q.type)}</span>
           ${q.budget ? `<span class="tag tag--gold">${esc(q.budget)}</span>` : ''}
+          ${q.photos && q.photos.length ? `<span class="tag">${q.photos.length} foto</span>` : ''}
           <time>${when(q.date)}</time>
         </div>
         <details ${q.read ? '' : 'open'}>
@@ -112,10 +113,30 @@
           </div>
         </details>
         ${q.notes ? `<p class="quote__notes"><b>Note:</b> ${esc(q.notes)}</p>` : ''}
+        ${q.photos && q.photos.length ? `<div class="q-photos">${q.photos.map((p, i) => `
+          <button type="button" class="q-photo" data-photo="${i}" title="Ingrandisci"><img src="${p.data}" alt="Foto ${i + 1} del guasto"></button>`).join('')}</div>` : ''}
         ${contactFoot(q)}
       </article>`).join('');
   };
   listActions('#quotes', SIGMA.quotes, SIGMA.saveQuotes, renderQuotes, 'preventivo');
+
+  // Foto del guasto: ingrandimento e download
+  const lightbox = $('#lightbox');
+  const closeLightbox = () => { lightbox.hidden = true; lightbox.querySelector('img').src = ''; };
+  $('#quotes').addEventListener('click', (e) => {
+    const btn = e.target.closest('.q-photo');
+    if (!btn) return;
+    const q = SIGMA.quotes().find(x => x.id === Number(btn.closest('[data-id]').dataset.id));
+    const p = q && q.photos[+btn.dataset.photo];
+    if (!p) return;
+    lightbox.querySelector('img').src = p.data;
+    const dl = lightbox.querySelector('a');
+    dl.href = p.data;
+    dl.download = `${(q.name || 'cliente').replace(/[^\w]+/g, '_')}_${+btn.dataset.photo + 1}.jpg`;
+    lightbox.hidden = false;
+  });
+  lightbox.addEventListener('click', (e) => { if (e.target === lightbox || e.target.closest('[data-close]')) closeLightbox(); });
+  addEventListener('keydown', (e) => { if (e.key === 'Escape' && !lightbox.hidden) closeLightbox(); });
 
   // --- Recensioni ---
   const starsHtml = (n) => `<span class="stars">${'★'.repeat(n)}<i>${'★'.repeat(5 - n)}</i></span>`;
