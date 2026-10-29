@@ -10,6 +10,7 @@ const SIGMA = (() => {
   const KEY_QUOTE_CFG = 'sigma.quoteConfig';
   const KEY_QUOTES = 'sigma.quotes';
   const KEY_REVIEWS = 'sigma.reviews';
+  const KEY_CONSENT = 'sigma.consent';
 
   const DEFAULT_CONTENT = {
     hero_title:    { label: 'Apertura – titolo', value: 'Negozio di informatica' },
@@ -34,13 +35,14 @@ const SIGMA = (() => {
     about_title:   { label: 'Azienda – titolo', value: 'La nostra storia' },
     about_text:    { label: 'Azienda – testo', value: 'Sigma System nasce ad Andria dalla passione per la tecnologia e dalla voglia di offrire un punto di riferimento serio per chi lavora e vive con il computer. Ogni giorno seguiamo privati, professionisti e aziende con lo stesso obiettivo: soluzioni concrete, tempi chiari e un rapporto di fiducia che dura nel tempo.', long: true },
     reviews_title: { label: 'Recensioni – titolo', value: 'Dicono di noi' },
+    google_review_url: { label: 'Link per le recensioni Google (dalla scheda Google del negozio; se vuoto il pulsante non compare)', value: '' },
     contact_title: { label: 'Contatti – titolo', value: 'Passa a trovarci' },
     company_name:  { label: 'Ragione sociale', value: 'Sigma System s.r.l.' },
     address:       { label: 'Indirizzo', value: 'Via Bologna 15/17, 76123 Andria (BT)' },
     phone:         { label: 'Telefono', value: '0883 596563' },
     email:         { label: 'Email', value: 'info@sigmasystem.it' },
     vat:           { label: 'Partita IVA', value: '12345678901' },
-    hours:         { label: 'Orari', value: 'Lun–Sab 9:00–13:00 · 16:30–20:00' }
+    hours:         { label: 'Orari (formato: Lun–Ven 9:00–13:00 · 16:30–20:00, Sab 9:00–13:00 – usato anche per "Aperto ora")', value: 'Lun–Sab 9:00–13:00 · 16:30–20:00' }
   };
 
   const DEFAULT_COLORS = {
@@ -155,6 +157,10 @@ const SIGMA = (() => {
     approvedReviews: () => read(KEY_REVIEWS, []).filter(r => r.status === 'approved'),
     saveReviews: (r) => write(KEY_REVIEWS, r),
     addReview: (r) => prepend(KEY_REVIEWS, { status: 'pending', ...r }),
+
+    // Consenso cookie: null = non ancora scelto; { external: true|false } dopo la scelta
+    consent: () => read(KEY_CONSENT, null),
+    saveConsent: (external) => write(KEY_CONSENT, { external: !!external, date: new Date().toISOString() }),
 
     applyColors: (colors = SIGMA.colors()) => {
       const root = document.documentElement.style;

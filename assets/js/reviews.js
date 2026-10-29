@@ -24,6 +24,13 @@
     $('#rvSummary').innerHTML = '<p class="rv-empty">Ancora nessuna recensione: racconta per primo la tua esperienza con noi.</p>';
   }
 
+  // Pulsante per le recensioni su Google: compare solo se il link è impostato nel gestionale
+  const googleUrl = (SIGMA.content().google_review_url || '').trim();
+  if (/^https:\/\/\S+$/i.test(googleUrl)) {
+    $('#rvGoogle').href = googleUrl;
+    $('#rvGoogle').hidden = false;
+  }
+
   // Frecce visibili solo se le recensioni non entrano tutte
   const arrows = $('#rvArrows');
   const checkArrows = () => { arrows.hidden = track.scrollWidth <= track.clientWidth + 4; };

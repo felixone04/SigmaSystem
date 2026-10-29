@@ -14,6 +14,58 @@
   $$('[data-mail]').forEach(a => a.href = 'mailto:' + c.email);
   $('#year').textContent = new Date().getFullYear();
 
+  // --- Aperto ora / Chiuso, calcolato dagli orari scritti nel gestionale (ora italiana) ---
+  const DAYS = ['dom', 'lun', 'mar', 'mer', 'gio', 'ven', 'sab'];
+  const DAY_NAMES = ['domenica', 'lunedì', 'martedì', 'mercoledì', 'giovedì', 'venerdì', 'sabato'];
+  // Riconosce testi come "Lun–Ven 9:00–13:00 · 16:30–20:00, Sab 9:00–13:00"
+  const parseHours = (txt) => {
+    const sched = {};
+    const re = /\b(lun|mar|mer|gio|ven|sab|dom)[a-zìé]*\.?(?:\s*[–—-]\s*(lun|mar|mer|gio|ven|sab|dom)[a-zìé]*\.?)?|(\d{1,2})[:.](\d{2})\s*[–—-]\s*(\d{1,2})[:.](\d{2})/gi;
+    let days = null, m;
+    while ((m = re.exec(txt))) {
+      if (m[1]) {
+        const a = DAYS.indexOf(m[1].toLowerCase()), b = m[2] ? DAYS.indexOf(m[2].toLowerCase()) : a;
+        days = [];
+        for (let d = a; ; d = (d + 1) % 7) { days.push(d); if (d === b) break; }
+      } else if (days) {
+        const from = +m[3] * 60 + +m[4], to = +m[5] * 60 + +m[6];
+        days.forEach(d => (sched[d] = sched[d] || []).push([from, to]));
+      }
+    }
+    Object.values(sched).forEach(s => s.sort((x, y) => x[0] - y[0]));
+    return Object.keys(sched).length ? sched : null;
+  };
+  const romeNow = () => {
+    const p = Object.fromEntries(new Intl.DateTimeFormat('en-GB', { timeZone: 'Europe/Rome', weekday: 'short', hour: '2-digit', minute: '2-digit', hourCycle: 'h23' })
+      .formatToParts(new Date()).map(x => [x.type, x.value]));
+    return { day: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].indexOf(p.weekday), min: +p.hour * 60 + +p.minute };
+  };
+  const hhmm = (m) => `${Math.floor(m / 60)}:${String(m % 60).padStart(2, '0')}`;
+  const openStatus = (sched) => {
+    const { day, min } = romeNow();
+    const today = sched[day] || [];
+    const cur = today.find(([f, t]) => min >= f && min < t);
+    if (cur) return { open: true, text: `Aperto ora · chiude alle ${hhmm(cur[1])}` };
+    const later = today.find(([f]) => f > min);
+    if (later) return { open: false, text: `Chiuso ora · riapre alle ${hhmm(later[0])}` };
+    for (let i = 1; i <= 7; i++) {
+      const d = (day + i) % 7;
+      if (sched[d]) return { open: false, text: `Chiuso ora · apre ${i === 1 ? 'domani' : DAY_NAMES[d]} alle ${hhmm(sched[d][0][0])}` };
+    }
+    return null;
+  };
+  const hours = parseHours(c.hours);
+  const badge = $('#openBadge');
+  const paintBadge = () => {
+    const s = hours && openStatus(hours);
+    badge.hidden = !s;
+    if (!s) return;
+    badge.textContent = s.text;
+    badge.classList.toggle('is-open', s.open);
+  };
+  paintBadge();
+  setInterval(paintBadge, 60000);
+
   // Titolo: parole che compaiono una alla volta
   $$('.split').forEach(el => {
     const words = el.textContent.trim().split(/\s+/);
@@ -76,7 +128,11 @@
   const stepEls = [...$$('.step')];
   const aboutMark = $('#aboutMark');
   const aboutSec = $('#azienda');
+  const toTop = $('#toTop');
+  const navLinks = [...$$('#navLinks a')].map(a => ({ a, sec: document.querySelector(a.getAttribute('href')) })).filter(x => x.sec);
   let lastY = 0, ticking = false;
+
+  toTop.addEventListener('click', () => scrollTo({ top: 0, behavior: reduced ? 'auto' : 'smooth' }));
 
   const onScroll = () => {
     const y = scrollY;
@@ -96,6 +152,19 @@
     // Simbolo che ruota nella sezione azienda
     const a = aboutSec.getBoundingClientRect();
     aboutMark.style.setProperty('--rot', ((innerHeight - a.top) * 0.08).toFixed(1) + 'deg');
+
+    // Menu: evidenzia la sezione in cui ci si trova (l'ultima il cui inizio ha superato un terzo dello schermo)
+    let current = null;
+    navLinks.forEach(x => { if (x.sec.getBoundingClientRect().top <= innerHeight * 0.35) current = x; });
+    if (y + innerHeight >= document.documentElement.scrollHeight - 4) current = navLinks[navLinks.length - 1];
+    navLinks.forEach(x => {
+      const on = x === current;
+      x.a.classList.toggle('is-active', on);
+      if (on) x.a.setAttribute('aria-current', 'true'); else x.a.removeAttribute('aria-current');
+    });
+
+    // Pulsante torna su dopo il primo schermo
+    toTop.classList.toggle('show', y > innerHeight * 0.9);
     ticking = false;
   };
   addEventListener('scroll', () => { if (!ticking) { ticking = true; requestAnimationFrame(onScroll); } }, { passive: true });

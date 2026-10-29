@@ -117,7 +117,7 @@
           <label>Telefono<input data-c="phone" type="tel" value="${esc(c.phone)}" autocomplete="tel"></label>
           <label class="wide">Email *<input data-c="email" type="email" value="${esc(c.email)}" autocomplete="email"></label>
           <label class="wide">Note o richieste particolari<textarea data-c="notes" rows="3">${esc(c.notes)}</textarea></label>
-          <label class="check wide"><input type="checkbox" data-c="privacy" ${c.privacy ? 'checked' : ''}> Acconsento al trattamento dei dati per essere ricontattato.</label>
+          <label class="check wide"><input type="checkbox" data-c="privacy" ${c.privacy ? 'checked' : ''}> <span>Acconsento al trattamento dei dati per essere ricontattato (<a href="privacy.html" target="_blank">informativa privacy</a>).</span></label>
         </div>`;
     }
     // Riepilogo

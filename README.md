@@ -31,6 +31,13 @@ Il pulsante **Azzera scelte** (con conferma al secondo tocco) riporta il prevent
 
 Le recensioni inviate dal sito arrivano *in attesa*: compaiono sul sito solo dopo **Approva e pubblica** nel gestionale.
 
+## Privacy, orari e recensioni Google
+
+- `privacy.html` è un'informativa di base (GDPR e cookie) compilata con i dati aziendali dei Testi: **va fatta verificare** da un consulente prima della pubblicazione definitiva, soprattutto quando cambierà l'hosting.
+- Il banner cookie salva la scelta nel browser; la mappa di Google si carica solo con il consenso o con il pulsante "Mostra la mappa". I caratteri sono ospitati in `assets/fonts` (nessun collegamento a Google Fonts).
+- L'etichetta "Aperto ora / Chiuso" legge il campo **Orari** dei Testi: scriverlo nel formato `Lun–Ven 9:00–13:00 · 16:30–20:00, Sab 9:00–13:00`. Se il testo non è riconoscibile l'etichetta non compare.
+- Il pulsante "Recensiscici su Google" compare quando nei Testi si inserisce il link per le recensioni della scheda Google (inizia con `https://`).
+
 ## Nota (versione dimostrativa)
 
 Testi, colori, configurazione, messaggi, preventivi e recensioni sono salvati nel **browser** (localStorage):
